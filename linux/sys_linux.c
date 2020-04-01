@@ -202,7 +202,7 @@ void Sys_Backtrace (int sig, siginfo_t *siginfo, void *secret)
 	size_t		i;
 	char		**strings;
 #ifndef __x86_64__
-	ucontext_t 	*uc = (ucontext_t *)secret;
+	//ucontext_t 	*uc = (ucontext_t *)secret;
 #endif
 
 	signal (SIGSEGV, SIG_DFL);
@@ -228,7 +228,7 @@ void Sys_Backtrace (int sig, siginfo_t *siginfo, void *secret)
 	size = backtrace (array, sizeof(array)/sizeof(void*));
 
 #ifndef __x86_64__
-	array[1] = (void *) uc->uc_mcontext.gregs[REG_EIP];
+	//array[1] = (void *) uc->uc_mcontext.gregs[REG_EIP];
 #endif
 	
 	strings = backtrace_symbols (array, size);
@@ -303,7 +303,7 @@ void Sys_Spinstats_f (void)
 unsigned short Sys_GetFPUStatus (void)
 {
 	unsigned short fpuword;
-	__asm__ __volatile__ ("fnstcw %0" : "=m" (fpuword));
+	//__asm__ __volatile__ ("fnstcw %0" : "=m" (fpuword));
 	return fpuword;
 }
 
@@ -318,7 +318,7 @@ void Sys_SetFPU (void)
 	fpuword |= (0 << 8);
 	fpuword &= ~(3 << 10);
 	fpuword |= (0 << 10);
-	__asm__ __volatile__ ("fldcw %0" : : "m" (fpuword));
+	//__asm__ __volatile__ ("fldcw %0" : : "m" (fpuword));
 }
 
 void Sys_Init(void)
@@ -490,6 +490,8 @@ void *Sys_GetGameAPI (void *parms, int baseq2)
 	const char *gamename = "gameaxp.so";
 #elif defined __x86_64__
 	const char *gamename = "gamex86_64.so";
+#elif defined __arm__
+	const char *gamename = "gamearm.so";
 #else
 #error "Don't know what kind of dynamic objects to use for this architecture."
 #endif
